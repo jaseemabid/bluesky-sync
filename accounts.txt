@@ -14,6 +14,7 @@ igupta.in
 itseieio.bsky.social
 jabid.in
 jakelazaroff.com
+jesusgollonet.bsky.social
 just-be.dev
 kelin.bsky.social
 mani.itsrainingmani.dev
@@ -36,4 +37,3 @@ ttiimm.bsky.social
 vaibhavsagar.com
 vluisa.bsky.social
 winstoncooke.com
-jesusgollonet.bsky.social
