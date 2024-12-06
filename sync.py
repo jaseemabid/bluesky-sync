@@ -70,7 +70,9 @@ def main():
             for p in profiles.profiles
         ]
 
-        data = models.ComAtprotoRepoApplyWrites.Data(repo="jabid.in", writes=writes)
+
+        list_owner = members.list.creator.handle
+        data = models.ComAtprotoRepoApplyWrites.Data(repo=list_owner, writes=writes)
         client.com.atproto.repo.apply_writes(data)
 
 
