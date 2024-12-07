@@ -44,17 +44,16 @@ def main():
             print("No new users to add, exiting")
             continue
 
-        if len(missing) > 25:
-            print(
-                "⚠️ Bluesky list API can only handle 25 items at a time",
-                "Update the code or split the data into smaller chunks",
-            )
-            exit(1)
+        MAX_PROFILE_FETCH = 25
+        missing_profiles = []
+        rest = list(missing)
+        while rest:
+            chunk, rest = rest[:MAX_PROFILE_FETCH], rest[MAX_PROFILE_FETCH:]
+            print(f"Adding {len(chunk)} users to the {name}: {chunk}")
 
-        print(f"Adding {len(missing)} users to the {name}: {missing}")
-
-        # ✨ Neat API to get all the missing users in one request
-        profiles = client.app.bsky.actor.get_profiles({"actors": list(missing)})
+            # ✨ Neat API to get profiles in batch request
+            res = client.app.bsky.actor.get_profiles({"actors": list(chunk)})
+            missing_profiles = missing_profiles + res.profiles
 
         # ✨ All new users are added to the list in a single API
         writes = [
@@ -67,9 +66,8 @@ def main():
                     "createdAt": datetime.now(timezone.utc).isoformat(),
                 },
             )
-            for p in profiles.profiles
+            for p in missing_profiles
         ]
-
 
         list_owner = members.list.creator.handle
         data = models.ComAtprotoRepoApplyWrites.Data(repo=list_owner, writes=writes)
