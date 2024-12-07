@@ -8,12 +8,13 @@ def main():
     # Setup these in an `.env` file, shell env or github actions.
     LOGIN = os.environ["AT_LOGIN"]
     PASSWORD = os.environ["AT_PASSWORD"]
+    CONFIG_FILE = os.environ.get("BSKY_SYNC_CONFIG_FILE", "accounts.txt")
     LISTS = [
         ("starter pack", os.environ["STARTER_PACK_URI"]),
         ("list", os.environ["LIST_URI"]),
     ]
 
-    with open("accounts.txt") as f:
+    with open(CONFIG_FILE) as f:
         expected = set(line.strip() for line in f.readlines() if line.strip())
 
     client = Client()

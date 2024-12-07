@@ -9,6 +9,7 @@
 ## Dev
 
 1. Create `.env` file with `AT_LOGIN`, `AT_PASSWORD`, `STARTER_PACK_URI` and `LIST_URI`
+    - Optionally set `BSKY_SYNC_CONFIG_FILE` (default: `accounts.txt`)
 2. `$ uv run --env-file .env sync.py`
 
 
