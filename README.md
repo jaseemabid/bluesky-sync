@@ -8,7 +8,7 @@
 
 ## Dev
 
-1. Create `.env` file with `AT_LOGIN`, `AT_PASSWORD`, `STARTER_PACK_URI` and `LIST_URI`
+1. `$ cp sample.env .env` and supply your own values
 2. `$ uv run --env-file .env sync.py`
 
 
