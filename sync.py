@@ -1,7 +1,8 @@
-from atproto import Client, models
+import itertools
 import os
-from datetime import datetime
-from datetime import timezone
+from datetime import datetime, timezone
+
+from atproto import Client, models
 
 
 def main():
@@ -45,36 +46,29 @@ def main():
             print("No new users to add, exiting")
             continue
 
-        if len(missing) > 25:
-            print(
-                "⚠️ Bluesky list API can only handle 25 items at a time",
-                "Update the code or split the data into smaller chunks",
-            )
-            exit(1)
+        for batch in itertools.batched(missing, 25):
+            print(f"Adding {len(batch)} users to the {name}: {batch}")
 
-        print(f"Adding {len(missing)} users to the {name}: {missing}")
+            # ✨ Neat API to get all the missing users in one request
+            profiles = client.app.bsky.actor.get_profiles({"actors": list(batch)})
 
-        # ✨ Neat API to get all the missing users in one request
-        profiles = client.app.bsky.actor.get_profiles({"actors": list(missing)})
+            # ✨ All new users are added to the list in a single API
+            writes = [
+                models.ComAtprotoRepoApplyWrites.Create(
+                    collection="app.bsky.graph.listitem",
+                    value={
+                        "$type": "app.bsky.graph.listitem",
+                        "subject": p["did"],
+                        "list": uri,
+                        "createdAt": datetime.now(timezone.utc).isoformat(),
+                    },
+                )
+                for p in profiles.profiles
+            ]
 
-        # ✨ All new users are added to the list in a single API
-        writes = [
-            models.ComAtprotoRepoApplyWrites.Create(
-                collection="app.bsky.graph.listitem",
-                value={
-                    "$type": "app.bsky.graph.listitem",
-                    "subject": p["did"],
-                    "list": uri,
-                    "createdAt": datetime.now(timezone.utc).isoformat(),
-                },
-            )
-            for p in profiles.profiles
-        ]
-
-
-        list_owner = members.list.creator.handle
-        data = models.ComAtprotoRepoApplyWrites.Data(repo=list_owner, writes=writes)
-        client.com.atproto.repo.apply_writes(data)
+            list_owner = members.list.creator.handle
+            data = models.ComAtprotoRepoApplyWrites.Data(repo=list_owner, writes=writes)
+            client.com.atproto.repo.apply_writes(data)
 
 
 if __name__ == "__main__":
