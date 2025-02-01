@@ -9,6 +9,7 @@
 ## Dev
 
 1. `$ cp sample.env .env` and supply your own values
+    - Optionally set `BSKY_SYNC_CONFIG_FILE` (default: `accounts.txt`)
 2. `$ uv run --env-file .env sync.py`
 
 
