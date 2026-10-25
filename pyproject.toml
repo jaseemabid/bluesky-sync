@@ -3,12 +3,9 @@ name = "bluesky-sync"
 version = "0.1.0"
 description = "Sync a list of users to a bluesky starter pack"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "atproto>=0.0.55",
-]
+requires-python = ">=3.15"
+dependencies = ["atproto>=0.0.73"]
 
-[dependency-groups]
-dev = [
-    "ipython>=8.29.0",
-]
+[tool.uv]
+required-version = ">=0.13.5"
+preview-features = ["format-command"]
